@@ -4,4 +4,5 @@ export const STORE_CONFIG = {
   currency: 'COP',
   locale: 'es-CO',
   freeShippingThreshold: 150000,
+  shippingCost: 9900,
 }
