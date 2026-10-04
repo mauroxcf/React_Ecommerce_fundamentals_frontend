@@ -1,4 +1,5 @@
 import { RouterProvider } from 'react-router'
+import CartProvider from '@/context/cart/CartProvider'
 import { router } from './router'
 
 /**
@@ -6,5 +7,9 @@ import { router } from './router'
  * (carrito, sesión, tema...) que envuelven a toda la aplicación.
  */
 export default function App() {
-  return <RouterProvider router={router} />
+  return (
+    <CartProvider>
+      <RouterProvider router={router} />
+    </CartProvider>
+  )
 }
