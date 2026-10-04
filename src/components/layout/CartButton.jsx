@@ -10,7 +10,7 @@ export default function CartButton() {
   return (
     <Link
       to={ROUTES.cart()}
-      className="relative rounded-full p-2 text-gray-700 hover:bg-gray-100"
+      className="relative inline-flex rounded-full p-2 text-gray-700 hover:bg-gray-100"
       aria-label={`Carrito de compras, ${itemsCount} productos`}
     >
       <CartIcon />

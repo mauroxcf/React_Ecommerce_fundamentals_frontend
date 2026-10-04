@@ -8,6 +8,7 @@ import MainLayout from '@/layouts/MainLayout'
  */
 const HomePage = lazy(() => import('@/pages/HomePage'))
 const ProductListPage = lazy(() => import('@/pages/ProductListPage'))
+const ProductDetailPage = lazy(() => import('@/pages/ProductDetailPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 export const router = createBrowserRouter([
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: 'productos', element: <ProductListPage /> },
       { path: 'categoria/:categorySlug', element: <ProductListPage /> },
+      { path: 'producto/:slug', element: <ProductDetailPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
