@@ -7,6 +7,7 @@ import MainLayout from '@/layouts/MainLayout'
  * descarga el código de una página cuando el usuario la visita.
  */
 const HomePage = lazy(() => import('@/pages/HomePage'))
+const ProductListPage = lazy(() => import('@/pages/ProductListPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 export const router = createBrowserRouter([
@@ -15,6 +16,8 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: 'productos', element: <ProductListPage /> },
+      { path: 'categoria/:categorySlug', element: <ProductListPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
