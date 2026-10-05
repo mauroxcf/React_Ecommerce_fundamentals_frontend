@@ -9,10 +9,10 @@ fácil de extender y cuidando el performance.
 ## Cómo correrlo
 
 ```bash
-npm install
-npm run dev       # servidor de desarrollo en http://localhost:5173
-npm run build     # build de producción en /dist
-npm run preview   # sirve el build de producción
+yarn install
+yarn dev          # servidor de desarrollo en http://localhost:5173
+yarn build        # build de producción en /dist
+yarn preview      # sirve el build de producción
 ```
 
 ## Páginas
