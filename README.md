@@ -6,6 +6,14 @@ It includes a Home page, a product list page (PLP), a product detail page (PDP) 
 The code is meant to be easy to read (even for junior developers), easy to extend,
 and mindful of performance.
 
+## Screenshots
+
+| Page | Desktop | Mobile |
+| ---- | ------- | ------ |
+| **Home** | <img src="docs/screenshots/home-desktop.png" alt="Home page on desktop" width="560"> | <img src="docs/screenshots/home-mobile.png" alt="Home page on mobile" width="180"> |
+| **PLP** | <img src="docs/screenshots/plp-desktop.png" alt="Product list page on desktop" width="560"> | <img src="docs/screenshots/plp-mobile.png" alt="Product list page on mobile" width="180"> |
+| **PDP** | <img src="docs/screenshots/pdp-desktop.png" alt="Product detail page on desktop" width="560"> | <img src="docs/screenshots/pdp-mobile.png" alt="Product detail page on mobile" width="180"> |
+
 ## Getting started
 
 ```bash
