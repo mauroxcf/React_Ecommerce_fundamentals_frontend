@@ -1,96 +1,98 @@
 # Fundamentals Store
 
-Ecommerce de ejemplo construido con **React 19**, **React Router** y **Tailwind CSS v4**.
-Incluye Home, listado de productos (PLP), detalle de producto (PDP) y carrito de compras.
+Sample ecommerce built with **React 19**, **React Router** and **Tailwind CSS v4**.
+It includes a Home page, a product list page (PLP), a product detail page (PDP) and a shopping cart.
 
-El código está pensado para que sea fácil de leer (incluso para desarrolladores junior),
-fácil de extender y cuidando el performance.
+The code is meant to be easy to read (even for junior developers), easy to extend,
+and mindful of performance.
 
-## Cómo correrlo
+## Getting started
 
 ```bash
 yarn install
-yarn dev          # servidor de desarrollo en http://localhost:5173
-yarn build        # build de producción en /dist
-yarn preview      # sirve el build de producción
+yarn dev          # development server at http://localhost:5173
+yarn build        # production build in /dist
+yarn preview      # serves the production build
 ```
 
-## Páginas
+## Pages
 
-| Ruta                       | Página                | Descripción                                        |
-| -------------------------- | --------------------- | -------------------------------------------------- |
-| `/`                        | `HomePage`            | Banner, categorías, destacados y marcas            |
-| `/productos`               | `ProductListPage`     | Todo el catálogo y resultados de búsqueda (`?q=`)  |
-| `/categoria/:categorySlug` | `ProductListPage`     | Productos de un departamento o una subcategoría    |
-| `/producto/:slug`          | `ProductDetailPage`   | Detalle del producto                               |
-| `/carrito`                 | `CartPage`            | Carrito de compras                                 |
+| Route                      | Page                  | Description                                     |
+| -------------------------- | --------------------- | ----------------------------------------------- |
+| `/`                        | `HomePage`            | Banner, categories, featured products and brands |
+| `/productos`               | `ProductListPage`     | Full catalog and search results (`?q=`)         |
+| `/categoria/:categorySlug` | `ProductListPage`     | Products from a department or a subcategory     |
+| `/producto/:slug`          | `ProductDetailPage`   | Product details                                 |
+| `/carrito`                 | `CartPage`            | Shopping cart                                   |
 
-Los filtros de la PLP viven en la URL, así se pueden compartir y funcionan con el botón "atrás":
+> The store is aimed at Spanish-speaking customers, so URLs and UI text are in Spanish.
+
+PLP filters live in the URL, so they can be shared and they work with the browser's "back" button:
 `/categoria/snacks?marca=frito-lay&orden=price-asc`
 
-## Estructura de carpetas
+## Folder structure
 
 ```
 src/
-├── app/                 # Arranque de la app
-│   ├── App.jsx          #   providers globales (carrito)
-│   ├── router.jsx       #   definición de rutas (páginas con lazy loading)
-│   └── routes.js        #   helpers de URLs: ROUTES.productDetail(slug)
-├── pages/               # Una página por ruta. Sólo ORDENAN componentes.
-├── layouts/             # Estructura común (navbar + contenido + footer)
-├── components/          # Componentes agrupados por dominio
-│   ├── ui/              #   genéricos y reutilizables: Button, Badge, íconos...
+├── app/                 # App bootstrap
+│   ├── App.jsx          #   global providers (cart)
+│   ├── router.jsx       #   route definitions (lazy-loaded pages)
+│   └── routes.js        #   URL helpers: ROUTES.productDetail(slug)
+├── pages/               # One page per route. Pages only ARRANGE components.
+├── layouts/             # Shared structure (navbar + content + footer)
+├── components/          # Components grouped by domain
+│   ├── ui/              #   generic and reusable: Button, Badge, icons...
 │   ├── layout/          #   Navbar, MegaMenu, MobileMenu, Footer...
 │   ├── product/         #   ProductCard, ProductGrid, ProductPrice...
-│   ├── home/            #   secciones de la Home
-│   ├── plp/             #   filtros y ordenamiento del listado
-│   ├── pdp/             #   galería, info y especificaciones del producto
-│   └── cart/            #   líneas y resumen del carrito
-├── context/cart/        # Estado global del carrito (Context + useReducer)
-├── hooks/               # Hooks propios: useCart, useProducts, useProductFilters...
-├── services/            # Acceso a datos (mock o backend)
-│   ├── catalogService.js#   ÚNICO punto que usan los hooks
+│   ├── home/            #   Home page sections
+│   ├── plp/             #   list filters and sorting
+│   ├── pdp/             #   product gallery, info and specifications
+│   └── cart/            #   cart lines and summary
+├── context/cart/        # Global cart state (Context + useReducer)
+├── hooks/               # Custom hooks: useCart, useProducts, useProductFilters...
+├── services/            # Data access (mock or backend)
+│   ├── catalogService.js#   the ONLY entry point used by hooks
 │   ├── adapters/        #   mockCatalogAdapter / httpCatalogAdapter
-│   └── mappers/         #   productMapper: respuesta cruda -> modelo de la app
-├── data/mocks/          # Datos de prueba (10 marcas x 3 productos)
-├── config/              # Configuración: tienda, entorno, opciones de orden
-└── utils/               # Funciones puras: formatPrice, categoryTree...
+│   └── mappers/         #   productMapper: raw response -> app model
+├── data/mocks/          # Mock data (10 brands x 3 products)
+├── config/              # Configuration: store, environment, sort options
+└── utils/               # Pure functions: formatPrice, categoryTree...
 ```
 
-**Regla general:** si un componente se usa en varias páginas va en `components/ui` o
-`components/product`; si es propio de una página va en la carpeta de esa página
+**Rule of thumb:** if a component is used on several pages, it goes in `components/ui` or
+`components/product`; if it belongs to a single page, it goes in that page's folder
 (`home`, `plp`, `pdp`, `cart`).
 
-## Cómo fluyen los datos
+## Data flow
 
 ```
-Componente  ->  hook (useProducts)  ->  catalogService  ->  adapter (mock | http)
-                                              │
-                                              └─> productMapper -> modelo Product
+Component  ->  hook (useProducts)  ->  catalogService  ->  adapter (mock | http)
+                                             │
+                                             └─> productMapper -> Product model
 ```
 
-- Los componentes **nunca** importan los mocks ni hacen `fetch` directamente.
-- `catalogService` decide la fuente de datos según la variable `VITE_API_BASE_URL`.
-- `productMapper` convierte lo que llega (mock o backend) al modelo `Product` que usan
-  los componentes. Si el backend cambia un nombre de campo, sólo se ajusta el mapper.
+- Components **never** import the mocks or call `fetch` directly.
+- `catalogService` picks the data source based on the `VITE_API_BASE_URL` variable.
+- `productMapper` converts whatever comes in (mock or backend) into the `Product` model
+  used by the components. If the backend renames a field, only the mapper needs to change.
 
-### Conectar el backend real
+### Connecting the real backend
 
-1. Copia `.env.example` a `.env` y define la URL:
+1. Copy `.env.example` to `.env` and set the URL:
    ```
    VITE_API_BASE_URL=http://localhost:4000/api
    ```
-2. El backend debe exponer (propuesta, ajustable en `httpCatalogAdapter.js`):
+2. The backend should expose (proposal, adjustable in `httpCatalogAdapter.js`):
 
-   | Endpoint                | Respuesta                                                      |
+   | Endpoint                | Response                                                       |
    | ----------------------- | -------------------------------------------------------------- |
-   | `GET /products`         | lista de productos. Query: `category`, `brand`, `q`, `sort`, `tag`, `limit` |
-   | `GET /products/:slug`   | un producto (404 si no existe)                                 |
-   | `GET /categories`       | árbol de categorías (`src/data/mocks/categories.js`)           |
-   | `GET /brands`           | lista de marcas (`src/data/mocks/brands.js`)                   |
+   | `GET /products`         | product list. Query: `category`, `brand`, `q`, `sort`, `tag`, `limit` |
+   | `GET /products/:slug`   | a single product (404 if it doesn't exist)                     |
+   | `GET /categories`       | category tree (`src/data/mocks/categories.js`)                 |
+   | `GET /brands`           | brand list (`src/data/mocks/brands.js`)                        |
 
-3. La forma de un producto "crudo" está documentada en `src/data/mocks/products.js`
-   (inspirada en VTEX / Shopify):
+3. The shape of a "raw" product is documented in `src/data/mocks/products.js`
+   (inspired by VTEX / Shopify):
 
    ```js
    {
@@ -102,8 +104,8 @@ Componente  ->  hook (useProducts)  ->  catalogService  ->  adapter (mock | http
      brand: { id: 'samsung', name: 'Samsung', slug: 'samsung' },
      categoryId: 'celulares',
      seller: { id: 'samsung-store', name: 'Samsung Store Oficial' },
-     price: 3899000,          // precio de venta
-     listPrice: 4499000,      // precio antes del descuento
+     price: 3899000,          // selling price
+     listPrice: 4499000,      // price before discount
      availableQuantity: 15,   // stock
      images: ['https://...'],
      specifications: { Almacenamiento: '256 GB', RAM: '8 GB' },
@@ -111,51 +113,51 @@ Componente  ->  hook (useProducts)  ->  catalogService  ->  adapter (mock | http
    }
    ```
 
-## Carrito
+## Cart
 
-- `CartProvider` guarda el carrito con `useReducer` y lo persiste en `localStorage`.
-- `cartReducer.js` es una función pura con las acciones: agregar, cambiar cantidad,
-  eliminar y vaciar. La cantidad nunca supera el stock disponible.
-- Dos hooks:
-  - `useCart()` → datos: `items`, `itemsCount`, `subtotal`, `discount`, `total`.
-  - `useCartActions()` → funciones: `addItem`, `updateQuantity`, `removeItem`, `clearCart`.
+- `CartProvider` stores the cart with `useReducer` and persists it to `localStorage`.
+- `cartReducer.js` is a pure function with these actions: add, change quantity,
+  remove and clear. The quantity never exceeds the available stock.
+- Two hooks:
+  - `useCart()` → data: `items`, `itemsCount`, `subtotal`, `discount`, `total`.
+  - `useCartActions()` → functions: `addItem`, `updateQuantity`, `removeItem`, `clearCart`.
 
-  Si un componente sólo **modifica** el carrito (por ejemplo, el botón "Agregar"), usa
-  `useCartActions`: así no se vuelve a renderizar cada vez que el carrito cambia.
+  If a component only **modifies** the cart (for example, the "Add" button), use
+  `useCartActions`: that way it doesn't re-render every time the cart changes.
 
-## Decisiones de performance
+## Performance decisions
 
-- **Code splitting por página:** cada página se carga con `lazy()` sólo cuando se visita.
-- **Contextos separados** para estado y acciones del carrito (menos re-renders).
-- **`memo`** en `ProductCard` y `CartItem`, que se repiten en listas.
-- **Imágenes** con `width`/`height` (evita saltos de layout), `loading="lazy"` en
-  listados y `fetchPriority="high"` en la imagen principal de la PDP.
-- **Hero sin imagen** (sólo CSS) para un LCP rápido.
-- **Íconos SVG en línea** en vez de una librería de íconos.
-- **Búsqueda con input no controlado**: no re-renderiza en cada tecla.
-- **Caché en memoria** de categorías y marcas (se piden una sola vez).
-- `Intl.NumberFormat` se crea una sola vez en `formatPrice`.
+- **Per-page code splitting:** each page is loaded with `lazy()` only when it's visited.
+- **Separate contexts** for cart state and cart actions (fewer re-renders).
+- **`memo`** on `ProductCard` and `CartItem`, which are repeated in lists.
+- **Images** with `width`/`height` (prevents layout shifts), `loading="lazy"` in
+  lists and `fetchPriority="high"` on the main PDP image.
+- **Image-free hero** (CSS only) for a fast LCP.
+- **Inline SVG icons** instead of an icon library.
+- **Uncontrolled search input**: it doesn't re-render on every keystroke.
+- **In-memory cache** for categories and brands (fetched only once).
+- `Intl.NumberFormat` is created only once in `formatPrice`.
 
-## Cómo agregar cosas nuevas
+## How to add new things
 
-**Una sección nueva en la Home**
-1. Crea `src/components/home/MiSeccion.jsx`.
-2. Agrégala en `src/pages/HomePage.jsx` donde quieras que aparezca.
+**A new Home section**
+1. Create `src/components/home/MySection.jsx`.
+2. Add it to `src/pages/HomePage.jsx` wherever you want it to appear.
 
-**Una página nueva**
-1. Crea `src/pages/MiPagina.jsx`.
-2. Agrega su URL en `src/app/routes.js`.
-3. Regístrala con `lazy()` en `src/app/router.jsx`.
+**A new page**
+1. Create `src/pages/MyPage.jsx`.
+2. Add its URL to `src/app/routes.js`.
+3. Register it with `lazy()` in `src/app/router.jsx`.
 
-**Un filtro nuevo en la PLP (por ejemplo, precio)**
-1. Crea `src/components/plp/PriceFilter.jsx`.
-2. Agrégalo en `FilterSidebar.jsx`.
-3. Lee el nuevo parámetro en `useProductFilters.js` y pásalo al servicio.
+**A new PLP filter (for example, price)**
+1. Create `src/components/plp/PriceFilter.jsx`.
+2. Add it to `FilterSidebar.jsx`.
+3. Read the new parameter in `useProductFilters.js` and pass it to the service.
 
-**Una marca o producto nuevo (mientras se usan mocks)**
-Edita `src/data/mocks/brands.js` y `src/data/mocks/products.js`.
+**A new brand or product (while using mocks)**
+Edit `src/data/mocks/brands.js` and `src/data/mocks/products.js`.
 
-## Convención de commits
+## Commit convention
 
-Se usa [Conventional Commits](https://www.conventionalcommits.org/es/):
+This project uses [Conventional Commits](https://www.conventionalcommits.org/):
 `feat(plp): ...`, `fix(cart): ...`, `chore: ...`, `docs: ...`.
